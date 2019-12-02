@@ -8,7 +8,7 @@ object Day1 {
   printAssert(fuelForMass(1969), 654)
   printAssert(fuelForMass(100756), 33583)
 
-  def run: Unit = {
+  lazy val run: Unit = {
     val input  = readFileLines("Day1.txt").flatMap(_.toIntOption)
     val result = input.map(fuelForMass).sum
     println(result)
@@ -25,7 +25,7 @@ object Day1Part2 {
   printAssert(fuelForMass(1969), 966)
   printAssert(fuelForMass(100756), 50346)
 
-  def run: Unit = {
+  lazy val run: Unit = {
     val input  = readFileLines("Day1.txt").flatMap(_.toIntOption)
     val result = input.map(fuelForMass).sum
     println(result)
