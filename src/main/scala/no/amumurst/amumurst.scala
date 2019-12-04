@@ -5,16 +5,10 @@ package object amumurst {
   def readFileCsv(name: String): LazyList[Int] =
     scala.io.Source.fromResource(name).getLines().flatMap(_.split(',')).flatMap(_.toIntOption).to(LazyList)
 
-  def printAssert[T](given: T, expected: T): Unit = {
-    if (given != expected)
-      println(s"AssertError given: [$given], expected: [$expected]")
-    else ()
-  }
-
   implicit class IntOps(i: Int) {
     def digits: List[Char] = i.toString.toList
 
-    def addNumberChar(c: Char): Int = (i * 10) + c.asDigit
+    def addDigitChar(c: Char): Int = (i * 10) + c.asDigit
   }
 
   implicit class AnyOps[A](a: => A) {
@@ -28,14 +22,13 @@ package object amumurst {
       println(a)
       a
     }
-    def timed: A = {
+    def printTimed: Unit = {
       val start = System.currentTimeMillis()
       val x     = a
       val end   = System.currentTimeMillis()
       println(s"Used ${(end.toDouble - start) / 1000.0} seconds")
-      x
+      println(x)
     }
-    def printTimed: A = timed.printed
   }
 
 }

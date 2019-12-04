@@ -1,5 +1,6 @@
 package no.amumurst
 
+/*This solution is far too complicated and slow*/
 case class WireStep(x: Int, y: Int, steps: Int) {
   lazy val pos = (x, y)
 
@@ -51,21 +52,19 @@ object Day3 {
       case (aSet, bSet) => aSet.intersect(bSet).map(_.manhatanDistanceFrom(WireStep.origin)).minOption
     }
 
-  lazy val run = {
-    printAssert(program(List("R8", "U5", "L5", "D3"), List("U7", "R6", "D4", "L4")), Some(6))
-
-    printAssert(program(List("R75", "D30", "R83", "U83", "L12", "D49", "R71", "U7", "L72"),
-                        List("U62", "R66", "U55", "R34", "D71", "R55", "D58", "R83")),
-                Some(159))
-    printAssert(
-      program(List("R98", "U47", "R26", "D63", "R33", "U87", "L62", "D20", "R33", "U53", "R51"),
-              List("U98", "R91", "D20", "R16", "D67", "R40", "U7", "R15", "U6", "R7")),
-      Some(135)
-    )
-    readFileLines("Day3.txt").map(_.split(',').toList).toList match {
-      case a :: b :: Nil => println(program(a, b))
-      case _             => println("badly formatted file")
+  def runProgram(fileName: String, program: (List[String], List[String]) => Option[Int]): Option[Int] =
+    readFileLines(fileName).map(_.split(',').toList).toList match {
+      case a :: b :: Nil => program(a, b)
+      case _             => None
     }
+
+  lazy val run = {
+    program(List("R8", "U5", "L5", "D3"), List("U7", "R6", "D4", "L4")).printAssert(Some(6))
+    program(List("R75", "D30", "R83", "U83", "L12", "D49", "R71", "U7", "L72"),
+            List("U62", "R66", "U55", "R34", "D71", "R55", "D58", "R83")).printAssert(Some(159))
+    program(List("R98", "U47", "R26", "D63", "R33", "U87", "L62", "D20", "R33", "U53", "R51"),
+            List("U98", "R91", "D20", "R16", "D67", "R40", "U7", "R15", "U6", "R7")).printAssert(Some(135))
+    runProgram("Day3.txt", program).printTimed
   }
 }
 
@@ -81,19 +80,12 @@ object Day3Part2 {
     }
 
   lazy val run = {
-    printAssert(program(List("R8", "U5", "L5", "D3"), List("U7", "R6", "D4", "L4")), Some(30))
+    program(List("R8", "U5", "L5", "D3"), List("U7", "R6", "D4", "L4")).printAssert(Some(30))
 
-    printAssert(program(List("R75", "D30", "R83", "U83", "L12", "D49", "R71", "U7", "L72"),
-                        List("U62", "R66", "U55", "R34", "D71", "R55", "D58", "R83")),
-                Some(610))
-    printAssert(
-      program(List("R98", "U47", "R26", "D63", "R33", "U87", "L62", "D20", "R33", "U53", "R51"),
-              List("U98", "R91", "D20", "R16", "D67", "R40", "U7", "R15", "U6", "R7")),
-      Some(410)
-    )
-    readFileLines("Day3.txt").map(_.split(',').toList).toList match {
-      case a :: b :: Nil => println(program(a, b))
-      case _             => println("badly formatted file")
-    }
+    program(List("R75", "D30", "R83", "U83", "L12", "D49", "R71", "U7", "L72"),
+            List("U62", "R66", "U55", "R34", "D71", "R55", "D58", "R83")).printAssert(Some(610))
+    program(List("R98", "U47", "R26", "D63", "R33", "U87", "L62", "D20", "R33", "U53", "R51"),
+            List("U98", "R91", "D20", "R16", "D67", "R40", "U7", "R15", "U6", "R7")).printAssert(Some(410))
+    Day3.runProgram("Day3.txt", program).printTimed
   }
 }

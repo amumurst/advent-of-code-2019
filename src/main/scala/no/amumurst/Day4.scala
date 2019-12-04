@@ -17,7 +17,7 @@ object Day4 {
     numberIsValid(111100).printAssert(false)
     numberIsValid(223450).printAssert(false)
     numberIsValid(123789).printAssert(false)
-    println((353096 to 843212).par.count(numberIsValid).timed)
+    (353096 to 843212).par.count(numberIsValid).printTimed
   }
 }
 
@@ -27,8 +27,8 @@ object Day4Part2 {
     def loop(s: List[Char], number: Int): Int =
       s match {
         case Nil                                     => number
-        case a :: b :: c :: rest if a == b && b != c => loop(c +: rest, number.addNumberChar(a).addNumberChar(b))
-        case a :: b :: Nil                           => number.addNumberChar(a).addNumberChar(b)
+        case a :: b :: c :: rest if a == b && b != c => loop(c +: rest, number.addDigitChar(a).addDigitChar(b))
+        case a :: b :: Nil                           => number.addDigitChar(a).addDigitChar(b)
         case a :: rest                               => loop(rest.dropWhile(_ == a), number)
       }
 
