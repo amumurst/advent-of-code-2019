@@ -1,44 +1,47 @@
 package no.amumurst
 
+import scala.annotation.tailrec
 import scala.collection.parallel.CollectionConverters._
 
 object Day4 {
-  def isAscending(s: List[Char]): Boolean = s.sliding(2).collect { case a :: b :: Nil => a <= b }.forall(identity)
-  def isRepeat(s: List[Char]): Boolean    = s.sliding(2).collect { case a :: b :: Nil => a == b }.exists(identity)
+  def isAscending(i: Int): Boolean =
+    i.digits.sliding(2).collect { case a :: b :: Nil => a <= b }.forall(identity)
+  def isRepeat(i: Int): Boolean = i.digits.sliding(2).collect { case a :: b :: Nil => a == b }.exists(identity)
 
-  def numberIsValid(input: Int): Boolean = {
-    val s = input.toString.toList
-    isAscending(s) && isRepeat(s)
-  }
+  def numberIsValid(input: Int): Boolean =
+    isAscending(input) && isRepeat(input)
 
   lazy val run = {
-    printAssert(numberIsValid(111111), true)
-    printAssert(numberIsValid(123455), true)
-    printAssert(numberIsValid(111100), false)
-    printAssert(numberIsValid(223450), false)
-    printAssert(numberIsValid(123789), false)
-    println((353096 to 843212).par.count(numberIsValid))
+    numberIsValid(111111).printAssert(true)
+    numberIsValid(123455).printAssert(true)
+    numberIsValid(111100).printAssert(false)
+    numberIsValid(223450).printAssert(false)
+    numberIsValid(123789).printAssert(false)
+    println((353096 to 843212).par.count(numberIsValid).timed)
   }
 }
 
 object Day4Part2 {
-  def dropGroupsLargerThan2(s: List[Char]): List[Char] =
-    s match {
-      case a :: b :: c :: rest if a == b && b != c => a +: b +: dropGroupsLargerThan2(c +: rest)
-      case a :: b :: Nil                           => List(a, b)
-      case a :: rest                               => dropGroupsLargerThan2(rest.dropWhile(_ == a))
-      case a                                       => a
-    }
+  def dropGroupsLargerThan2(i: Int): Int = {
+    @tailrec
+    def loop(s: List[Char], number: Int): Int =
+      s match {
+        case Nil                                     => number
+        case a :: b :: c :: rest if a == b && b != c => loop(c +: rest, number.addNumberChar(a).addNumberChar(b))
+        case a :: b :: Nil                           => number.addNumberChar(a).addNumberChar(b)
+        case a :: rest                               => loop(rest.dropWhile(_ == a), number)
+      }
 
-  def numberIsValid(input: Int): Boolean = {
-    val s = input.toString.toList
-    Day4.isAscending(s) && Day4.isRepeat(dropGroupsLargerThan2(s))
+    loop(i.digits, 0)
   }
 
+  def numberIsValid(input: Int): Boolean =
+    Day4.isAscending(input) && Day4.isRepeat(dropGroupsLargerThan2(input))
+
   lazy val run = {
-    printAssert(numberIsValid(112233), true)
-    printAssert(numberIsValid(123444), false)
-    printAssert(numberIsValid(111122), true)
-    println((353096 to 843212).par.count(numberIsValid))
+    numberIsValid(112233).printAssert(true)
+    numberIsValid(123444).printAssert(false)
+    numberIsValid(111122).printAssert(true)
+    (353096 to 843212).par.count(numberIsValid).printTimed
   }
 }
