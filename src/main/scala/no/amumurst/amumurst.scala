@@ -5,6 +5,10 @@ package object amumurst {
   def readFileCsv(name: String): LazyList[Int] =
     scala.io.Source.fromResource(name).getLines().flatMap(_.split(',')).flatMap(_.toIntOption).to(LazyList)
 
+  implicit class StringOps(s: String) {
+    def digits: List[Int] = s.toList.map(_.asDigit)
+  }
+
   implicit class IntOps(i: Int) {
     def digits: List[Char] = i.toString.toList
 
