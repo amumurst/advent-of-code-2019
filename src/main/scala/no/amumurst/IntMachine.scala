@@ -1,6 +1,14 @@
 package no.amumurst
 
-case class IntMachine(program: List[Int] = Nil, inputs: List[Int] = Nil, outputs: List[Int] = Nil, pos: Int = 0)
+import scala.annotation.tailrec
+
+case class IntMachine(program: List[Int] = Nil,
+                      inputs: List[Int] = Nil,
+                      outputs: List[Int] = Nil,
+                      pos: Int = 0,
+                      name: String = "a") {
+  override def toString: String = s"M$name Inputs: $inputs Outputs:$outputs "
+}
 
 object IntMachine {
   implicit class IntMachineOps(im: IntMachine) {
@@ -12,7 +20,8 @@ object IntMachine {
     def moveN(n: Int): IntMachine                           = copy(pos = pos + n)
     def readValue(n: Int): Int                              = program(n)
 
-    lazy val advance: IntMachine =
+    @tailrec
+    final def advance: IntMachine =
       program.drop(pos) match {
         case Mode(Mode(_, b, c, 1)) :: readOne :: readTwo :: writeTo :: _ =>
           val p1   = if (c) readOne else readValue(readOne)
@@ -26,11 +35,10 @@ object IntMachine {
           next.advance
         case Mode(Mode(_, _, _, 3)) :: writeTo :: _ =>
           val (inputValue, newP) = takeInput
-          val next = inputValue match {
-            case Some(value) => newP.updateProgram(value, writeTo).moveN(2)
-            case None        => newP.moveN(2)
+          inputValue match {
+            case Some(value) => newP.updateProgram(value, writeTo).moveN(2).advance
+            case None        => im
           }
-          next.advance
         case Mode(Mode(_, _, c, 4)) :: readFrom :: _ =>
           val value = if (c) readFrom else readValue(readFrom)
           val next  = addOutput(value).moveN(2)
