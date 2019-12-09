@@ -18,6 +18,8 @@ object Main extends App {
     case Some("7b") => Day7Part2.run
     case Some("8")  => Day8.run
     case Some("8b") => Day8Part2.run
+    case Some("9")  => Day9.run
+    case Some("9b") => Day9Part2.run
     case _          => println("No day selected")
   }
 }

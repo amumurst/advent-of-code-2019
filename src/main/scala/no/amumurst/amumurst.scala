@@ -2,8 +2,8 @@ package no
 
 package object amumurst {
   def readFileLines(name: String): LazyList[String] = scala.io.Source.fromResource(name).getLines().to(LazyList)
-  def readFileCsv(name: String): LazyList[Int] =
-    scala.io.Source.fromResource(name).getLines().flatMap(_.split(',')).flatMap(_.toIntOption).to(LazyList)
+  def readFileCsvL(name: String): LazyList[Long]    = readFileLines(name).flatMap(_.split(',')).flatMap(_.toLongOption)
+  def readFileCsv(name: String): LazyList[Int]      = readFileCsvL(name).map(_.toInt)
 
   implicit class StringOps(s: String) {
     def digits: List[Int] = s.toList.map(_.asDigit)

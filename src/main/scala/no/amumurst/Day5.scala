@@ -5,7 +5,7 @@ object Day5 {
     IntMachine(program = List(3, 0, 4, 0, 99), inputs = List(2)).advance.outputs
       .printAssert(List(2))
 
-    IntMachine(program = readFileCsv("Day5.txt").toList, inputs = List(1)).advance.outputs
+    IntMachine(program = readFileCsvL("Day5.txt").toList, inputs = List(1)).advance.outputs
       .filterNot(_ == 0)
       .printTimed
   }
@@ -86,7 +86,7 @@ object Day5Part2 {
     ).advance.outputs.printAssert(List(1001))
 
     "program".printed
-    IntMachine(program = readFileCsv("Day5.txt").toList, inputs = List(5)).advance.outputs
+    IntMachine(program = readFileCsvL("Day5.txt").toList, inputs = List(5)).advance.outputs
       .filterNot(_ == 0)
       .printTimed
   }
